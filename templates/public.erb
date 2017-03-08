@@ -188,7 +188,7 @@
             }
         },
         {
-            "apiVersion": "2015-06-15",
+            "apiVersion": "2016-04-30-preview",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[variables('vmName')]",
             "location": "[variables('location')]",
@@ -214,9 +214,11 @@
                     },
                     "osDisk": {
                         "name": "osdisk",
+                        <% if !managed_disk %>
                         "vhd": {
                             "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('OSDiskName'),'.vhd')]"
                         },
+                        <% end %>
                         "caching": "ReadWrite",
                         "createOption": "FromImage"
                     }

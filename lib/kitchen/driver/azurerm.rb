@@ -76,6 +76,10 @@ module Kitchen
         false
       end
 
+      default_config(:managed_disk) do |_config|
+        false
+      end
+
       def create(state)
         state = validate_state(state)
         image_publisher, image_offer, image_sku, image_version = config[:image_urn].split(':', 4)
@@ -92,7 +96,7 @@ module Kitchen
           imageOffer: image_offer,
           imageSku: image_sku,
           imageVersion: image_version,
-          vmName: state[:vm_name]
+          vmName: state[:vm_name],
         }
 
         credentials = Kitchen::Driver::Credentials.new.azure_credentials_for_subscription(config[:subscription_id])
@@ -372,10 +376,10 @@ logoff
 
       def virtual_machine_deployment_template
         if config[:vnet_id] == ''
-          virtual_machine_deployment_template_file('public.erb', vm_tags: vm_tag_string(config[:vm_tags]))
+          virtual_machine_deployment_template_file('public.erb', vm_tags: vm_tag_string(config[:vm_tags]), managed_disk: config[:managed_disk])
         else
           info "Using custom vnet: #{config[:vnet_id]}"
-          virtual_machine_deployment_template_file('internal.erb', vnet_id: config[:vnet_id], subnet_id: config[:subnet_id], public_ip: config[:public_ip], vm_tags: vm_tag_string(config[:vm_tags]))
+          virtual_machine_deployment_template_file('internal.erb', vnet_id: config[:vnet_id], subnet_id: config[:subnet_id], public_ip: config[:public_ip], vm_tags: vm_tag_string(config[:vm_tags]), managed_disk: config[:managed_disk])
         end
       end
 
